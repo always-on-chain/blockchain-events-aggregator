@@ -6,8 +6,9 @@ const worker = require('../worker.js');
 app.use(express.static(__dirname + '/../react-client/dist'));
 
 app.get('/events', (req, res) => {
+  console.log('server123', req.body)
   worker.getEventsFromEB(req.body);
-  // console.log('server', req.body)
+  
   res.send(req.body);
 })
 
