@@ -7,7 +7,7 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      events: dummy
+      events: []
     };
   }
 
@@ -17,10 +17,10 @@ class App extends React.Component {
       url: 'http://localhost:3000/events',
       contentType: 'application/json',
       success: (data) => {
-        // this.setState({
-        //   events: data
-        // });
-        console.log('success', this.state.events)
+        this.setState({
+          events: data
+        });
+        console.log('success with data ', data)
       },
       error: (error) => {
         console.log('ERROR on ajax Get request', error);
@@ -38,15 +38,6 @@ class App extends React.Component {
     )
   }
 }
-
-let dummy = [{
-  name: 'Blockchain festival',
-  description: 'great event happening',
-  url: 'www.techcrunch.com',
-  start: '7: 30pm',
-  end: '11:00pm',
-  location: 'San Francisco'
-}];
 
 ReactDOM.render(<App />, document.getElementById('app'));
 

@@ -3,6 +3,9 @@ mongoose.connect('mongodb://database/events');
 
 const eventSchema = mongoose.Schema({
   id: {type: String, unique: true},
+  name: String,
+  start: String,
+  end: String,
   url: String,
 });
 
@@ -14,6 +17,9 @@ let save = (events) => {
   for (var i = 0; i < events.length; i++) {
     event = new Event ({
       id: events[i].id,
+      name: events[i].name.text,
+      start: events[i].start.local,
+      end: events[i].end.local,
       url: events[i].url
     })
 
@@ -23,6 +29,13 @@ let save = (events) => {
   }
 }
 
-module.exports.save = save;
+let get = (callback) => {
+  Event.find((err, events) => {
+    if (err) return console.log('ERROR on Find', err);
+    callback(events);
+  })
+}
 
+module.exports.save = save;
+module.exports.get = get;
 
