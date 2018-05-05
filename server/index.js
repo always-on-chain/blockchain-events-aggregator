@@ -6,11 +6,18 @@ const database = require('../database/events.js');
 
 app.use(express.static(__dirname + '/../react-client/dist'));
 
-app.get('/events', (req, res) => {
+app.get('/events/relevance', (req, res) => {
   worker.getEventsFromEB();
   database.get((events) => {
     res.send(events);
-  })
+  }, 'relevance')
+})
+
+app.get('/events/date', (req, res) => {
+  worker.getEventsFromEB();
+  database.get((events) => {
+    res.send(events);
+  }, 'date')
 })
 
 const port = 3000;

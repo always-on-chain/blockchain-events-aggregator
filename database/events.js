@@ -51,6 +51,10 @@ let save = (events) => {
           events[i].logo = {url: 'https://cdn.evbstatic.com/s3-build/perm_001/f8c5fa/django/images/discovery/default_logos/4.png'}
         }
 
+        if (venueAddress === null) {
+          venueAddress = 'The venue to be confirmed later. Stay tuned!'
+        }
+
         event = new Event ({
           id: events[i].id,
           name: events[i].name.text,
@@ -70,11 +74,20 @@ let save = (events) => {
   }
 }
 
-let get = (callback) => {
-  Event.find((err, events) => {
-    if (err) return console.log('ERROR on Find', err);
-    callback(events);
-  })
+let get = (callback, sort) => {
+  if (sort === 'relevance') {
+    Event.find((err, events) => {
+      if (err) return console.log('ERROR on Find on relevance sort', err);
+      callback(events);
+    })
+  } else {
+    Event.find((err, events) => {
+      if (err) return console.log('ERROR on Find on date sort', err);
+      callback(events);
+    })
+    .sort({ start: 1 })
+  }
+  
 }
 
 module.exports.save = save;
