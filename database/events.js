@@ -1,6 +1,8 @@
 const mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost/events');
 
+//need image, cost, date, message if address is null
+
 const eventSchema = mongoose.Schema({
   id: {type: String, unique: true},
   name: String,
@@ -8,7 +10,9 @@ const eventSchema = mongoose.Schema({
   end: String,
   url: String,
   address: String,
-  city: String
+  city: String,
+  image: String,
+
 });
 
 const Event = mongoose.model('Events', eventSchema);
@@ -40,8 +44,12 @@ let save = (events) => {
     for (var j = 0; j < venues.length; j++) {
       // console.log('venues id', venues[j].id)
       if (venues[j].id === venueID) {
-        venueAddress = venues[i].address.address_1;
-        venueCity = venues[i].address.city;
+        venueAddress = venues[j].address.address_1;
+        venueCity = venues[j].address.city;
+
+        if (events[i].logo === null) {
+          events[i].logo = {url: 'https://cdn.evbstatic.com/s3-build/perm_001/f8c5fa/django/images/discovery/default_logos/4.png'}
+        }
 
         event = new Event ({
           id: events[i].id,
@@ -50,10 +58,11 @@ let save = (events) => {
           end: events[i].end.local,
           url: events[i].url,
           address: venueAddress,
-          city: venueCity
+          city: venueCity,
+          image: events[i].logo.url
         })
 
-        event.save((err, story) => {
+        event.save((err) => {
           // if (err) return console.error(err);
         });
       }

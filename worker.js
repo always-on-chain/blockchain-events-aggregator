@@ -24,6 +24,7 @@ const getEventsFromEB = () => {
     rp(events)
       .then((events) => {
         events = JSON.parse(events).events;
+        console.log(events)
         database.save(events);
         return events;
       })
