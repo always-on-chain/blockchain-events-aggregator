@@ -19,9 +19,7 @@ class App extends React.Component {
       url: `http://localhost:3000/events/${sort}`,
       contentType: 'application/json',
       success: (data) => {
-        this.setState({
-          events: data
-        });
+        this.setState({ events: data });
         console.log('success with data ', data)
       },
       error: (error) => {
@@ -34,30 +32,20 @@ class App extends React.Component {
     this.fetch(this.state.button);
   }
 
-  changeState(sort) {
-    if (sort === 'relevance') {
-      this.setState({
-        button: 'relevance'
-      })
-    } 
-    if (sort === 'date') {
-      console.log('hi')
-      this.setState({
-        button: 'date'
-      })
-    }
-  }
-
-  handleClick() {
-    this.fetch(this.state.button);
+  handleClick(sort) {
+    this.setState({button: sort}, ()=> {
+      console.log('currentState', this.state.button)
+      this.fetch(this.state.button);
+    });
+    
   }
 
   render() {
     return (
     <div id="container">
       <div id="sort">
-        <Button onClick={()=> {this.changeState('relevance')}} bsStyle="info">Relevance</Button> 
-        <Button onClick={()=> {this.changeState('date')}} bsStyle="info">Date</Button>
+        <Button onClick={()=> {this.handleClick('relevance');}} bsStyle="info">Relevance</Button> 
+        <Button onClick={()=> {this.handleClick('date');}} bsStyle="info">Date</Button>
       </div>
       <Events events={this.state.events} /> 
     </div>
