@@ -20,6 +20,13 @@ app.get('/events/date', (req, res) => {
   }, 'date')
 })
 
+// app.get('/events/meetup', (req, res) => {
+//   worker.getEventsFromMeetup();
+//   // database.get((events) => {
+//   //   res.send(events);
+//   // }, 'date')
+// })
+
 const port = 3000;
 
 app.listen(port, () => {

@@ -1,5 +1,5 @@
 {
-  "name": "hrsf89-mvp",
+  "name": "waynekwest88-mvp",
   "version": "1.0.0",
   "description": "",
   "main": "webpack.config.js",
@@ -32,13 +32,13 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/waynekwest88/hrsf89-mvp.git"
+    "url": "git+https://github.com/waynekwest88/mvp.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/waynekwest88/hrsf89-mvp/issues"
+    "url": "https://github.com/waynekwest88/mvp/issues"
   },
-  "homepage": "https://github.com/waynekwest88/hrsf89-mvp#readme"
+  "homepage": "https://github.com/waynekwest88/mvp#readme"
 }

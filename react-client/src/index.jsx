@@ -30,6 +30,7 @@ class App extends React.Component {
 
   componentWillMount() {
     this.fetch(this.state.button);
+    // this.fetch('meetup')
   }
 
   handleClick(sort) {

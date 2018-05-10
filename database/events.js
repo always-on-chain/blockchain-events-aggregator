@@ -1,8 +1,6 @@
 const mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost/events');
 
-//need image, cost, date, message if address is null
-
 const eventSchema = mongoose.Schema({
   id: {type: String, unique: true},
   name: String,
@@ -40,9 +38,7 @@ let save = (events) => {
 
   for (var i = 0; i < events.length; i++) {
     venueID = events[i].venue_id;
-    // console.log('ID', venueID)
     for (var j = 0; j < venues.length; j++) {
-      // console.log('venues id', venues[j].id)
       if (venues[j].id === venueID) {
         venueAddress = venues[j].address.address_1;
         venueCity = venues[j].address.city;
