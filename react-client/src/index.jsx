@@ -9,7 +9,7 @@ class App extends React.Component {
     super(props);
     this.state = {
       events: [],
-      button: 'relevance'
+      // button: 'relevance'
     };
   }
 
@@ -29,15 +29,15 @@ class App extends React.Component {
   }
 
   componentWillMount() {
-    this.fetch(this.state.button);
-    // this.fetch('meetup')
+    this.fetch('relevance');
   }
 
   handleClick(sort) {
-    this.setState({button: sort}, ()=> {
-      console.log('currentState', this.state.button)
-      this.fetch(this.state.button);
-    });
+    this.fetch(sort);
+    // this.setState({button: sort}, ()=> {
+    //   console.log('currentState', this.state.button)
+    //   this.fetch(this.state.button);
+    // });
     
   }
 
@@ -45,8 +45,8 @@ class App extends React.Component {
     return (
     <div id="container">
       <div id="sort">
-        <Button onClick={()=> {this.handleClick('relevance');}} bsStyle="info">Relevance</Button> 
-        <Button onClick={()=> {this.handleClick('date');}} bsStyle="info">Date</Button>
+        <Button id="relevance" onClick={()=> {this.handleClick('relevance');}} bsStyle="info">Relevance</Button> 
+        <Button id="date" onClick={()=> {this.handleClick('date');}} bsStyle="info">Date</Button>
       </div>
       <Events events={this.state.events} /> 
     </div>
