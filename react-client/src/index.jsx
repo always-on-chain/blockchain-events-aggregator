@@ -1,52 +1,44 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import $ from 'jquery';
 import Events from './components/Events.jsx';
 import Button from 'react-bootstrap/lib/Button';
+import axios from 'axios';
 
 class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       events: [],
-      // button: 'relevance'
     };
   }
 
-  fetch(sort) {
-    $.ajax({
-      method: 'GET',
-      url: `http://localhost:3000/events/${sort}`,
-      contentType: 'application/json',
-      success: (data) => {
-        this.setState({ events: data });
-        console.log('success with data ', data)
-      },
-      error: (error) => {
-        console.log('ERROR on ajax Get request', error);
-      }
-    })
+  fetch(endpoint) {
+    axios.get(endpoint)
+      .then((response) => {
+        console.log('response', response)
+        this.setState({events: response.data});
+      })
+      .catch((error) => {console.log('ERROR on axiox get request', error)});
   }
 
   componentWillMount() {
-    this.fetch('relevance');
+    this.fetch('events/relevance');
   }
 
-  handleClick(sort) {
-    this.fetch(sort);
+  handleClick(endpoint) {
+    this.fetch(endpoint);
     // this.setState({button: sort}, ()=> {
     //   console.log('currentState', this.state.button)
     //   this.fetch(this.state.button);
     // });
-    
   }
 
   render() {
     return (
     <div id="container">
       <div id="sort">
-        <Button id="relevance" onClick={()=> {this.handleClick('relevance');}} bsStyle="info">Relevance</Button> 
-        <Button id="date" onClick={()=> {this.handleClick('date');}} bsStyle="info">Date</Button>
+        <Button id="relevance" onClick={()=> {this.handleClick('events/relevance');}} bsStyle="info">Relevance</Button> 
+        <Button id="date" onClick={()=> {this.handleClick('events/date');}} bsStyle="info">Date</Button>
       </div>
       <Events events={this.state.events} /> 
     </div>
