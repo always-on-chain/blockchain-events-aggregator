@@ -21,7 +21,7 @@ class App extends React.Component {
       .catch((error) => {console.log('ERROR on axiox get request', error)});
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.fetch('events/relevance');
   }
 
@@ -34,6 +34,7 @@ class App extends React.Component {
   }
 
   render() {
+    console.log('events', this.state.events)
     return (
     <div id="container">
       <div id="sort">
