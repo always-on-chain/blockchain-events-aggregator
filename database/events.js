@@ -1,4 +1,6 @@
 const mongoose = require('mongoose');
+const axios = require('axios');
+
 mongoose.connect('mongodb://localhost/events');
 
 const eventSchema = mongoose.Schema({
@@ -10,63 +12,63 @@ const eventSchema = mongoose.Schema({
   address: String,
   city: String,
   image: String,
-
+  venueId: String
 });
 
 const Event = mongoose.model('Events', eventSchema);
 
-const venues = [];
+const saveAddressCity = (id, address, city) => {
+  return new Promise((resolve, reject) => {
+    resolve({id: id, address: address, city: city});
+  })
+}
 
-const getVenues = (venue) => {
-  let venueObj = JSON.parse(venue);
-  let venueObjInserted = false;
+const saveVenues = (venues) => {
   for (var i = 0; i < venues.length; i++) {
-    if (venues[i].id === venueObj.id) {
-      venueObjInserted = true;
+    var id = venues[i].id;
+    var address = venues[i].address;
+    var city = venues[i].city;
+
+    if (address === null) {
+      address = 'The venue to be confirmed later. Stay tuned!';
     }
-  }
-  if (!venueObjInserted) {
-    venues.push(JSON.parse(venue));
+
+    saveAddressCity(id, address, city).then((response) => {
+      Event.findOne({venueId: response.id}, function (err, event) {
+        event.address = response.address;
+        event.city = response.city;  
+  
+        event.save(function (err) {
+          if (err) return console.error(err);
+        });
+      });
+    });
   }
 }
 
 let save = (events) => {
   let event;
-  let venueID;
-  let venueAddress;
-  let venueCity;
 
   for (var i = 0; i < events.length; i++) {
-    venueID = events[i].venue_id;
-    for (var j = 0; j < venues.length; j++) {
-      if (venues[j].id === venueID) {
-        venueAddress = venues[j].address.address_1;
-        venueCity = venues[j].address.city;
-
-        if (events[i].logo === null) {
-          events[i].logo = {url: 'https://cdn.evbstatic.com/s3-build/perm_001/f8c5fa/django/images/discovery/default_logos/4.png'}
-        }
-
-        if (venueAddress === null) {
-          venueAddress = 'The venue to be confirmed later. Stay tuned!'
-        }
-
-        event = new Event ({
-          id: events[i].id,
-          name: events[i].name.text,
-          start: events[i].start.local,
-          end: events[i].end.local,
-          url: events[i].url,
-          address: venueAddress,
-          city: venueCity,
-          image: events[i].logo.url
-        })
-
-        event.save((err) => {
-          // if (err) return console.error(err);
-        });
-      }
+    if (events[i].logo === null) {
+      events[i].logo = {url: 'https://cdn.evbstatic.com/s3-build/perm_001/f8c5fa/django/images/discovery/default_logos/4.png'}
     }
+
+    event = new Event ({
+      id: events[i].id,
+      name: events[i].name.text,
+      start: events[i].start.local,
+      end: events[i].end.local,
+      url: events[i].url,
+      address: null,
+      city: null,
+      image: events[i].logo.url,
+      venueId: events[i].venue_id
+    })
+
+    event.save((err) => {
+      if (err) return console.error(err);
+    });
   }
 }
 
@@ -88,7 +90,7 @@ let get = (callback, sort) => {
 
 module.exports.save = save;
 module.exports.get = get;
-module.exports.getVenues = getVenues;
+module.exports.saveVenues = saveVenues;
 
 
 

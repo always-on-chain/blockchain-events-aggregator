@@ -2,55 +2,49 @@ const request = require('request');
 const mongoose = require('mongoose');
 const config = require('./config.js');
 const database = require('./database/events.js');
-const Promise = require('bluebird');
-const rp = require('request-promise');
+const axios = require('axios');
 
 mongoose.connect('mongodb://localhost/events');
 
-const getEventsFromEB = () => {
-  let events = {
-    url: `
-    https://www.eventbriteapi.com/v3/events/search/?token=${config.EventBrightToken}
-    &location.address=${'San Francisco'}
-    &q=${'blockchain'}
-    `,
-    headers: {
-      'User-Agent': 'request',
-      'Authorization': `Bearer ${config.EventBrightToken}`
+const eventbriteHeaders = {
+  'User-Agent': 'request',
+  'Authorization': `Bearer ${config.EventBrightToken}`
+}
+
+const getEventsFromEB = (location, type) => {
+  var mainUrl = `https://www.eventbriteapi.com/v3/events/search/?token=${config.EventBrightToken}
+  &location.address=${location}
+  &q=${type}`;
+
+  axios.get(mainUrl, {'headers': eventbriteHeaders}).then((response) => {
+    var events = response.data.events;
+    var promises = [];
+
+    events.forEach((event) => {
+      var venue = event.venue_id;
+      var venueUrl = `https://www.eventbriteapi.com/v3/venues/${venue}/?token=${config.EventBrightToken}`;
+      promises.push(axios.get(venueUrl, {'headers': eventbriteHeaders}));
+    })
+
+    database.save(events);
+    return promises;
+  }).then((response) => {
+    return axios.all(response);
+  }).then((response) => {
+    var venueObjects = response;
+    var venues = [];
+
+    for (var i = 0; i < venueObjects.length; i++) {
+      venues.push({
+        address: venueObjects[i].data.address.address_1,
+        city: venueObjects[i].data.address.city,
+        id: venueObjects[i].data.id
+      });
     }
-  };
-
-  return new Promise ((resolve, reject) => {
-    rp(events)
-      .then((events) => {
-        events = JSON.parse(events).events;
-        database.save(events);
-        return events;
-      })
-      .then((events) => {
-        let promises = [];
-
-        for (var i = 0; i < events.length; i++) {
-          let venue = JSON.parse(events[i].venue_id);
-          let location = {
-            url: `https://www.eventbriteapi.com/v3/venues/${venue}/?token=${config.EventBrightToken}`,
-            headers: {
-              'User-Agent': 'request',
-              'Authorization': `Bearer ${config.EventBrightToken}`
-            }
-          }
-          let locationPromise = rp(location)
-            .then((location) => {
-              database.getVenues(location);
-            })
-            promises.push(locationPromise);
-        }
-        Promise.all(promises)
-          .then(resolve)
-          .catch((err) => {
-            reject(err)
-          });
-      })
+    
+    database.saveVenues(venues);
+  }).catch((e) => {
+    console.log(e);
   })
 }
 

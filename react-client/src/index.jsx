@@ -12,6 +12,9 @@ class App extends React.Component {
     };
   }
 
+  //If I can't make Mongoose work with updating each event, I could possibly
+  //try to integerate the venue info to events in the client
+
   fetch(endpoint) {
     axios.get(endpoint)
       .then((response) => {

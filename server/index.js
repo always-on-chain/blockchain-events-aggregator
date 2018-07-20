@@ -7,14 +7,14 @@ const database = require('../database/events.js');
 app.use(express.static(__dirname + '/../react-client/dist'));
 
 app.get('/events/relevance', (req, res) => {
-  worker.getEventsFromEB();
+  worker.getEventsFromEB('San Francisco', 'blockchain');
   database.get((events) => {
     res.send(events);
   }, 'relevance')
 })
 
 app.get('/events/date', (req, res) => {
-  worker.getEventsFromEB();
+  worker.getEventsFromEB('San Francisco', 'blockchain');
   database.get((events) => {
     res.send(events);
   }, 'date')
