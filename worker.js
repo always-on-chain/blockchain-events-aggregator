@@ -17,16 +17,16 @@ const getEventsFromEB = (location, type) => {
   &q=${type}`;
 
   axios.get(mainUrl, {'headers': eventbriteHeaders}).then((response) => {
-    var events = response.data.events;
     var promises = [];
+    var events = response.data.events;
 
-    events.forEach((event) => {
+    events.forEach((event, i) => {
       var venue = event.venue_id;
       var venueUrl = `https://www.eventbriteapi.com/v3/venues/${venue}/?token=${config.EventBrightToken}`;
       promises.push(axios.get(venueUrl, {'headers': eventbriteHeaders}));
     })
 
-    database.save(events);
+    database.saveEvents(events);
     return promises;
   }).then((response) => {
     return axios.all(response);

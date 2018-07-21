@@ -46,7 +46,7 @@ const saveVenues = (venues) => {
   }
 }
 
-let save = (events) => {
+let saveEvents = (events) => {
   let event;
 
   for (var i = 0; i < events.length; i++) {
@@ -88,9 +88,11 @@ let get = (callback, sort) => {
   
 }
 
-module.exports.save = save;
-module.exports.get = get;
-module.exports.saveVenues = saveVenues;
+module.exports = {
+  saveEvents,
+  get,
+  saveVenues
+}
 
 
 

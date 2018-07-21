@@ -11,14 +11,14 @@ const Event = (props) => {
 
   if (eventBrite) {
     source = '/images/Eventbrite_wordmark_orange.jpg'
-  }  
+  }
 
   return (
     <div id="event">
-      <div id="image"><img src={props.event.image} /></div>
+      <img id="image" src={props.event.image} />
       <div id="event-info">
+        <div id="name"><a href={props.event.url} target="_blank">{props.event.name}</a></div>
         <div id="time">{convertedDate} {moment().format(time + ' a')} </div>
-        <div id="name"><a href={props.event.url} target="_blank">{event.name}</a></div>
         <div id="address">{props.event.address}, </div>
         <div id="city">{props.event.city}</div>
         <div id="source">Source: <img src={source} id="source-image"/></div>
